@@ -1,4 +1,4 @@
-package exercice6;
+package exercices1.exercice6;
 
 public class ex6 {
     public static void main(String[] args) {

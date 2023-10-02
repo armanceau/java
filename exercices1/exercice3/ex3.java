@@ -1,4 +1,4 @@
-package exercice3;
+package exercices1.exercice3;
 
 /**
  * ex3
