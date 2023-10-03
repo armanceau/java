@@ -5,63 +5,150 @@ import java.util.Scanner;
 
 public class ex1 {
     public static void main(String[] args) {
-
-        //Création du tableau à 2 dimensions de 3 par 3 avec des blancs
+        // Création du tableau à 2 dimensions de 3 par 3 avec des blancs
         char[][] grille = new char[][] {
             {' ', ' ', ' '},
             {' ', ' ', ' '},
             {' ', ' ', ' '}
         };
 
-        //Déclaration des variables
-        String joueur = "X";
-        String ordinateur = "O";
+        // Déclaration des symboles pour le joueur et l'ordinateur
+        char joueur = 'X';
+        char ordinateur = 'O';
+        char joueurActuel;
+        
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
 
-        //Le nombre est soit 0 soit 1
+        // Le nombre est soit 0 soit 1
         int r = random.nextInt(0, 2);
 
         System.out.println("Bienvenue dans le jeu du morpion !");
 
-        //Récupération du nom du joueur dans la variable nomJoueur
+        // Récupération du nom du joueur dans la variable nomJoueur
         System.out.print("Rentrez un nom de joueur : ");
         String nomJoueur = scanner.nextLine();
 
-        //Définition de qui commence la partie selon le nombre aléatoire
+        // Définition de qui commence la partie selon le nombre aléatoire
         if (r == 0) {
             System.out.println(nomJoueur + " commence.");
+            joueurActuel = joueur;
         } else {
             System.out.println("L'ordinateur commence.");
+            joueurActuel = ordinateur;
         }
 
         afficherGrille(grille);
 
-        
-        
+        // Boucle principale du jeu
+        while (!partieTerminee(grille)) {
+            if (joueurActuel == joueur) {
+                // Tour du joueur
+                jouerCoup(scanner, grille, joueur);
+                joueurActuel = ordinateur; // Passe au tour de l'ordinateur
+            } else {
+                // Tour de l'ordinateur (simulé ici, vous pouvez ajouter l'IA)
+                jouerCoupOrdinateur(grille, ordinateur);
+                joueurActuel = joueur; // Passe au tour du joueur
+            }
+            
+            afficherGrille(grille);
+        }
+
+        // Affichage du résultat de la partie
+        char resultat = resultatPartie(grille);
+        if (resultat == joueur) {
+            System.out.println(nomJoueur + " a gagné !");
+        } else if (resultat == ordinateur) {
+            System.out.println("L'ordinateur a gagné !");
+        } else {
+            System.out.println("Match nul !");
+        }
+
         scanner.close();
     }
 
     private static void afficherGrille(char[][] grille) {
-        // Parcours des lignes de la grille
-        for (int l = 0; l < grille.length; l++) { 
-
-            // Parcours des colonnes de la grille
-            for (int c = 0; c < grille[l].length; c++) { 
-                // Affiche le caractère de la case (joueur 'X', ordinateur 'O' ou espace ' ')
-                System.out.print(grille[l][c]); 
-                if (c < grille[l].length) {
-                    // Ajoute une barre verticale pour séparer les cases
-                    System.out.print(" | "); 
+        System.out.println("Grille actuelle :");
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(grille[i][j]);
+                if (j < 2) {
+                    System.out.print(" | ");
                 }
             }
-            // Passe à la ligne suivante après avoir affiché une ligne complète
-            System.out.println(); 
-
-            if (l < grille.length - 1) {
-                // Ajoute une ligne de séparation entre les lignes (sauf pour la dernière ligne)
-                System.out.println("-----------"); 
+            System.out.println();
+            if (i < 2) {
+                System.out.println("---------");
             }
         }
+    }
+
+    private static void jouerCoup(Scanner scanner, char[][] grille, char symbole) {
+        int ligne, colonne;
+        do {
+            System.out.print("Entrez la ligne (0, 1, ou 2) : ");
+            ligne = scanner.nextInt();
+            System.out.print("Entrez la colonne (0, 1, ou 2) : ");
+            colonne = scanner.nextInt();
+        } while (!coupValide(grille, ligne, colonne));
+        
+        grille[ligne][colonne] = symbole;
+    }
+
+    private static boolean coupValide(char[][] grille, int ligne, int colonne) {
+        return (ligne >= 0 && ligne < 3 && colonne >= 0 && colonne < 3 && grille[ligne][colonne] == ' ');
+    }
+
+    private static void jouerCoupOrdinateur(char[][] grille, char symbole) {
+        Random random = new Random();
+        int ligne, colonne;
+        do {
+            ligne = random.nextInt(3);
+            colonne = random.nextInt(3);
+        } while (!coupValide(grille, ligne, colonne));
+        
+        grille[ligne][colonne] = symbole;
+    }
+
+    private static boolean partieTerminee(char[][] grille) {
+        return (resultatPartie(grille) != ' ' || grillePleine(grille));
+    }
+
+    private static boolean grillePleine(char[][] grille) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (grille[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static char resultatPartie(char[][] grille) {
+        // Vérification des lignes
+        for (int i = 0; i < 3; i++) {
+            if (grille[i][0] == grille[i][1] && grille[i][1] == grille[i][2] && grille[i][0] != ' ') {
+                return grille[i][0];
+            }
+        }
+
+        // Vérification des colonnes
+        for (int j = 0; j < 3; j++) {
+            if (grille[0][j] == grille[1][j] && grille[1][j] == grille[2][j] && grille[0][j] != ' ') {
+                return grille[0][j];
+            }
+        }
+
+        // Vérification des diagonales
+        if (grille[0][0] == grille[1][1] && grille[1][1] == grille[2][2] && grille[0][0] != ' ') {
+            return grille[0][0];
+        }
+        if (grille[0][2] == grille[1][1] && grille[1][1] == grille[2][0] && grille[0][2] != ' ') {
+            return grille[0][2];
+        }
+
+        return ' '; // Aucun gagnant
     }
 }
