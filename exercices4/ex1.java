@@ -4,6 +4,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class ex1 {
+
+    static String nomJoueur = "";
     public static void main(String[] args) {
         // Création du tableau à 2 dimensions de 3 par 3 avec des blancs
         char[][] grille = new char[][] {
@@ -24,14 +26,18 @@ public class ex1 {
         int r = random.nextInt(0, 2);
 
         System.out.println("Bienvenue dans le jeu du morpion !");
+        System.out.println();
 
         // Récupération du nom du joueur dans la variable nomJoueur
         System.out.print("Rentrez un nom de joueur : ");
-        String nomJoueur = scanner.nextLine();
+        nomJoueur = scanner.nextLine();
+        System.out.println();
 
         // Définition de qui commence la partie selon le nombre aléatoire
         if (r == 0) {
-            System.out.println(nomJoueur + " commence.");
+            System.out.println(nomJoueur + " commence la partie.");
+            System.out.println();
+            System.out.println();
             joueurActuel = joueur;
         } else {
             System.out.println("L'ordinateur commence.");
@@ -47,7 +53,7 @@ public class ex1 {
                 jouerCoup(scanner, grille, joueur);
                 joueurActuel = ordinateur; // Passe au tour de l'ordinateur
             } else {
-                // Tour de l'ordinateur (simulé ici, vous pouvez ajouter l'IA)
+                // Tour de l'ordinateur
                 jouerCoupOrdinateur(grille, ordinateur);
                 joueurActuel = joueur; // Passe au tour du joueur
             }
@@ -58,11 +64,17 @@ public class ex1 {
         // Affichage du résultat de la partie
         char resultat = resultatPartie(grille);
         if (resultat == joueur) {
+            System.out.println();
             System.out.println(nomJoueur + " a gagné !");
+            System.out.println();
         } else if (resultat == ordinateur) {
+            System.out.println();
             System.out.println("L'ordinateur a gagné !");
+            System.out.println();
         } else {
+            System.out.println();
             System.out.println("Match nul !");
+            System.out.println();
         }
 
         scanner.close();
@@ -70,6 +82,7 @@ public class ex1 {
 
     private static void afficherGrille(char[][] grille) {
         System.out.println("Grille actuelle :");
+        System.out.println();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 System.out.print(grille[i][j]);
@@ -87,6 +100,9 @@ public class ex1 {
     private static void jouerCoup(Scanner scanner, char[][] grille, char symbole) {
         int ligne, colonne;
         do {
+            System.out.println();
+            System.out.println("--- Tour de " + nomJoueur + " --- ");
+            System.out.println();
             System.out.print("Entrez la ligne (0, 1, ou 2) : ");
             ligne = scanner.nextInt();
             System.out.print("Entrez la colonne (0, 1, ou 2) : ");
@@ -104,6 +120,9 @@ public class ex1 {
         Random random = new Random();
         int ligne, colonne;
         do {
+            System.out.println();
+            System.out.println("--- Tour de l'ordinateur --- ");
+            System.out.println();
             ligne = random.nextInt(3);
             colonne = random.nextInt(3);
         } while (!coupValide(grille, ligne, colonne));
